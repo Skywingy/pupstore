@@ -6,7 +6,10 @@ import { auth } from "../lib/firebase";
 
 const AuthContext = createContext<User | null>(null);
 
+
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
+
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
