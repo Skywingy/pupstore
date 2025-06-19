@@ -14,7 +14,7 @@ export function BonsaiTree() {
 
       if (user) {
         try {
-          const res = await fetch("http://localhost:8000/api/bonsai", {
+          const res = await fetch("http://localhost:8080/api/bonsai", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
