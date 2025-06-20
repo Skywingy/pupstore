@@ -30,7 +30,20 @@ export function LoginForm({
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
   try {
-    await signInWithEmailAndPassword(auth, email, password)
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    const user = userCredential.user
+
+    await fetch("http://localhost:8080/api/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+      }),
+    })
+
     navigate("/bonsai")
   } catch (err) {
     const errorMessage =
@@ -41,7 +54,20 @@ export function LoginForm({
 
 const handleGoogleLogin = async () => {
   try {
-    await signInWithPopup(auth, googleProvider)
+    const result = await signInWithPopup(auth, googleProvider)
+    const user = result.user
+
+    await fetch("http://localhost:8080/api/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+      }),
+    })
+
     navigate("/bonsai")
   } catch (err) {
     console.error("Google login error:", err)
