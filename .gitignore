@@ -24,5 +24,6 @@ dist-ssr
 *.sw?
 
 # Environment and sensitive files
-*.fireBaseServiceAccount.json
+back/src/config/fireBaseServiceAccount.json
+**/fireBaseServiceAccount.json
 .env
