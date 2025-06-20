@@ -15,7 +15,10 @@ export function BonsaiTree() {
 
       if (user) {
         try {
-          const token = await getIdToken();
+          const token = await user.getIdToken();
+          const token2 = await getIdToken();
+          console.log('token1---', token)
+          console.log('token2---', token2)
           if (!token) {
             console.error("No ID token found.");
             return;
@@ -25,7 +28,7 @@ export function BonsaiTree() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: token
+              Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({ userId: user.uid }),
           })

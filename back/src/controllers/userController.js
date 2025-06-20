@@ -2,7 +2,6 @@ import { User } from "../models/User.js";
 
 // POST /api/user
 export const syncUser = async (req, res) => {
-  console.log("////////////////");
   const { uid, email } = req.body;
 
   if (!uid || !email) {
