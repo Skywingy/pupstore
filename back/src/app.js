@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bonsaiRoutes from "./routes/bonsaiRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
@@ -14,9 +15,6 @@ app.use(
 app.use(express.json());
 
 app.use("/api/bonsai", bonsaiRoutes);
-
-app.get("/api/test", (req, res) => {
-  res.json({ message: "Hello from backend!" });
-});
+app.use("/api/user", userRoutes);
 
 export default app;
