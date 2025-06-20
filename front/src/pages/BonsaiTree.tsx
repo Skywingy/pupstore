@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import type { User } from "firebase/auth"
 import { auth } from "@/lib/firebase"
+import { getIdToken } from "@/lib/authToken"
 
 export function BonsaiTree() {
   const [bonsai, setBonsai] = useState<{ level: number } | null>(null)
@@ -14,10 +15,17 @@ export function BonsaiTree() {
 
       if (user) {
         try {
+          const token = await getIdToken();
+          if (!token) {
+            console.error("No ID token found.");
+            return;
+          }
+
           const res = await fetch("http://localhost:8080/api/bonsai", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: token
             },
             body: JSON.stringify({ userId: user.uid }),
           })
