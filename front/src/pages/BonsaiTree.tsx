@@ -1,57 +1,39 @@
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import type { User } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { getIdToken } from "@/lib/authToken";
+import { useAuth } from "@/context/AuthContext";
 
 export function BonsaiTree() {
+  const user = useAuth(); // 👈 Already verified by ProtectedRoute
   const [bonsai, setBonsai] = useState<{ level: number } | null>(null);
-  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
+    const fetchBonsai = async () => {
+      if (!user) return;
 
-      if (user) {
-        try {
-          const token = await user.getIdToken();
-          const token2 = await getIdToken();
-          console.log("token1---", token);
-          console.log("token2---", token2);
-          if (!token) {
-            console.error("No ID token found.");
-            return;
-          }
+      try {
+        const token = await user.getIdToken();
+        const res = await fetch("http://localhost:8080/api/bonsai", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ userId: user.uid }),
+        });
 
-          const res = await fetch("http://localhost:8080/api/bonsai", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ userId: user.uid }),
-          });
-
-          const data = await res.json();
-          setBonsai(data);
-        } catch (err) {
-          console.error("Failed to fetch bonsai:", err);
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setBonsai(null);
+        const data = await res.json();
+        setBonsai(data);
+      } catch (err) {
+        console.error("Failed to fetch bonsai:", err);
+      } finally {
         setLoading(false);
       }
-    });
+    };
 
-    return () => unsubscribe();
-  }, []);
+    fetchBonsai();
+  }, [user]);
 
-  if (loading) {
-    return <p className="text-center p-6">Loading bonsai data...</p>;
-  }
+  if (loading) return <p className="text-center p-6">Loading bonsai data...</p>;
 
   return (
     <div className="p-6 text-center">

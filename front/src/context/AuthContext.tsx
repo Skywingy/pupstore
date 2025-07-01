@@ -1,35 +1,26 @@
-// src/context/AuthContext.tsx
-import { createContext, useContext, useEffect, useState } from "react"
-import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "@/lib/firebase"
-import type { User } from "firebase/auth"
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useEffect, useState } from "react";
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
-interface AuthContextType {
-  currentUser: User | null
-  loading: boolean
-}
+// 👇 Tell TS it's a User or null
+const AuthContext = createContext<User | null>(null);
 
-const AuthContext = createContext<AuthContextType>({ currentUser: null, loading: true })
- 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => useContext(AuthContext)
+// 👇 Custom hook returns User | null
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user)
-      setLoading(false)
-    })
+      setCurrentUser(user);
+    });
 
-    return () => unsubscribe()
-  }, [])
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, loading }}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
+    <AuthContext.Provider value={currentUser}>{children}</AuthContext.Provider>
+  );
+};

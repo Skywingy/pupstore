@@ -1,67 +1,82 @@
-import { useState } from "react"
-import { createUserWithEmailAndPassword } from "firebase/auth"
-import { auth, googleProvider } from "@/lib/firebase"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { useNavigate } from "react-router-dom"
-import { FirebaseError } from "firebase/app"
-import { signInWithPopup } from "firebase/auth"
-
+import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { FirebaseError } from "firebase/app";
+import { signInWithPopup } from "firebase/auth";
 
 export function SignupForm() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
 
     try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-    const user = userCredential.user
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      const token = await user.getIdToken();
 
-    await fetch("http://localhost:8080/api/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-      }),
-    })
-    navigate("/bonsai")
+      await fetch("http://localhost:8080/api/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+        }),
+      });
+      navigate("/bonsai");
     } catch (err) {
-    const errorMessage =
-        err instanceof FirebaseError ? err.message : "An unknown error occurred"
-    setError(errorMessage)
+      const errorMessage =
+        err instanceof FirebaseError
+          ? err.message
+          : "An unknown error occurred";
+      setError(errorMessage);
     }
-  }
+  };
 
   const handleGoogleLogin = async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider)
-    const user = result.user
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      const token = await user.getIdToken();
 
-    await fetch("http://localhost:8080/api/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        uid: user.uid,
-        email: user.email,
-      }),
-    })
-    navigate("/bonsai")
-  } catch (err) {
-    console.error("Google login error:", err)
-  }
-}
+      await fetch("http://localhost:8080/api/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+        }),
+      });
+      navigate("/bonsai");
+    } catch (err) {
+      console.error("Google login error:", err);
+    }
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -93,11 +108,15 @@ export function SignupForm() {
             />
           </div>
           <Button type="submit">Sign Up</Button>
-          <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
-          Sign Up with Google
-        </Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleLogin}
+          >
+            Sign Up with Google
+          </Button>
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
