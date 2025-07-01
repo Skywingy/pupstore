@@ -3,7 +3,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getIdToken } from "@/lib/authToken";
-import { LogoutButton } from "@/components/LogOutButton";
 
 export function BonsaiTree() {
   const [bonsai, setBonsai] = useState<{ level: number } | null>(null);
@@ -73,11 +72,6 @@ export function BonsaiTree() {
         <p className="text-lg font-medium">🌱 Bonsai Level: {bonsai.level}</p>
       ) : (
         <p className="text-red-500">No bonsai found or failed to load.</p>
-      )}
-      {user && (
-        <div className="flex justify-end p-4">
-          <LogoutButton />
-        </div>
       )}
     </div>
   );
