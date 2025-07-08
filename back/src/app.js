@@ -14,7 +14,7 @@ app.use(
 
 app.use(express.json());
 
-app.use("/api/bonsai", bonsaiRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/bonsai", bonsaiRoutes);
 
 export default app;

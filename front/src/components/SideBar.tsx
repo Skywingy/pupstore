@@ -6,7 +6,7 @@ import { LogoutButton } from "@/components/LogOutButton";
 
 export function Sidebar() {
   return (
-    <div className="md:flex md:w-64 md:flex-col hidden border-r border-gray-200 h-screen">
+    <div className="SideBar md:flex md:w-64 md:flex-col hidden border-r border-gray-200 h-screen">
       <div className="flex flex-col justify-between h-full">
         {/* Top nav links */}
         <nav className="p-4 space-y-2">

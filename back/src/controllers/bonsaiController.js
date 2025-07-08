@@ -3,7 +3,6 @@ import Bonsai from "../models/Bonsai.js";
 
 // POST /api/bonsai
 export const getOrCreateBonsai = async (req, res) => {
-  console.log("------------------ yes bonsai forest here");
   const { userId } = req.body;
 
   if (!userId) {
