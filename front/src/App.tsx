@@ -4,6 +4,7 @@ import { LoginForm } from "./pages/Login";
 import { SignupForm } from "./pages/SignUp";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { BonsaiTree } from "./pages/BonsaiTree";
+import { VendingMachine } from "./pages/Vending";
 import Layout from "./layout/Layout";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           }
         >
           <Route path="bonsai" element={<BonsaiTree />} />
+          <Route path="vending" element={<VendingMachine />} />
         </Route>
       </Routes>
     </>
